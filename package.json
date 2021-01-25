@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
-    "dev": "concurrently \"tsc -w\" \"nodemon dist/index.htm\"",
-    "start": "nodemon dist/index.html"
+    "dev": "concurrently \"tsc -w\" \"nodemon dist/index.js\"",
+    "start": "nodemon dist/index.js"
   },
   "keywords": [],
   "author": "",
