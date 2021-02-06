@@ -1,4 +1,6 @@
-import { Resolver, Ctx, Arg, Mutation,  Int, InputType, Field } from 'type-graphql';
+import { MyContext } from './../types';
+import { Resolver, Ctx, Arg, Mutation, InputType, Field } from 'type-graphql';
+import {User} from '../entities/User';
 import argon2 from 'argon2';
 
 @InputType()
@@ -11,8 +13,19 @@ class UsernamePasswordInput {
 
 @Resolver()
 export class UserResolver {
-  @Mutation(() => String)
- register(@Arg('options') options: UsernamePasswordInput, @Ctx() { em }: MyContext) {
-    const hashedPassword
+  @Mutation(() => User)
+ async register(@Arg('options') options: UsernamePasswordInput, @Ctx() { em }: MyContext) {
+    const hashedPassword = await argon2.hash(options.password);
+    const user = em.create(User, { username: options.username, password: hashedPassword })
+    await em.persistAndFlush(user);
+    return user;
+  }
+  
+  @Mutation(() => User)
+ async login(@Arg('options') options: UsernamePasswordInput, @Ctx() { em }: MyContext) {
+    const hashedPassword = await argon2.hash(options.password);
+    const user = em.create(User, { username: options.username, password: hashedPassword })
+    await em.persistAndFlush(user);
+    return user;
   }
 }
