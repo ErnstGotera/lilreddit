@@ -6,6 +6,8 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { PostResolver } from './resolvers/post';
 import { UserResolver } from './resolvers/user';
+import { Post } from 'entities/Post';
+import { User } from 'entities/User'; 
 
 const main = async () => {
   const conn = await createConnection({
@@ -13,7 +15,7 @@ const main = async () => {
     database: 'lilreddit',
     logging: true,
     synchronize: true,
-
+    entities: [Post, User]
   })
 
   const app = express();
