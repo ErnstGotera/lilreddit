@@ -1,16 +1,20 @@
 import 'reflect-metadata';
-import microConfig from './mikro-orm.config';
-import { MikroORM } from '@mikro-orm/core';
+import { createConnection } from 'typeorm';
 import { __prod__ } from './constants';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { PostResolver } from './resolvers/post';
-import { UserResolver } from './resolvers/post';
+import { UserResolver } from './resolvers/user';
 
 const main = async () => {
-  const orm = await MikroORM.init(microConfig);
-  await orm.getMigrator().up;
+  const conn = await createConnection({
+    type: 'postgres',
+    database: 'lilreddit',
+    logging: true,
+    synchronize: true,
+
+  })
 
   const app = express();
   const apolloServer = new ApolloServer({
@@ -18,7 +22,6 @@ const main = async () => {
       resolvers: [ PostResolver, UserResolver],
       validate: false,
     }),
-    context: () => ({ em: orm.em }),
   });
   apolloServer.applyMiddleware({ app });
 
